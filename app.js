@@ -12,9 +12,11 @@ const mongoose = require('mongoose');
 // routers
 const orderRoutes = require('./api/routes/orders');
 const productRoutes = require('./api/routes/product');
+const userRoutes = require('./api/routes/user');
+
 
 // mongoose connection
-mongoose.connect('mongodb://127.0.0.1:27017/node-shop',{ useNewUrlParser: true })
+mongoose.connect('mongodb://127.0.0.1:27017/node-shop',{ useNewUrlParser: true } )
 
 // http logger
 app.use(morgan('dev'));
@@ -44,6 +46,8 @@ app.use((req, res, next) => {
 // routes which handle requsets
 app.use('/orders', orderRoutes);
 app.use('/products', productRoutes);
+app.use('/user', userRoutes);
+
 
 // handling error
 app.use((req, res, next) => {

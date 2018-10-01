@@ -3,9 +3,10 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const Order = require('../models/order');
 const Product = require('../models/product');
+const  checkAuth = require('../middleware/check-auth');
 
 // get all orders
-router.get('/' ,(req,res,next)=>{
+router.get('/', checkAuth, (req,res,next)=>{
     Order.find().select('quantity product _id')
     // for getting all detail from another collection use populate
     // use field name to get the selcted field
@@ -38,7 +39,7 @@ router.get('/' ,(req,res,next)=>{
 })
 
 // create order
-router.post('/' ,(req,res,next) => {
+router.post('/', checkAuth, (req,res,next) => {
     // fetch product
     Product.findById(req.body.productId)
     .then(product => {
@@ -75,7 +76,7 @@ router.post('/' ,(req,res,next) => {
     })
 })
 
-router.get('/:orderId' ,(req,res,next)=>{
+router.get('/:orderId', checkAuth, (req,res,next)=>{
     Order.findById(req.params.orderId)
     // donot pass any field to get all details 
     .populate('product')
@@ -102,7 +103,7 @@ router.get('/:orderId' ,(req,res,next)=>{
     })
 })
 
-router.delete('/:orderId' ,(req,res,next)=>{
+router.delete('/:orderId', checkAuth, (req,res,next)=>{
     Order.remove({_id:req.params.roderId}).exec()
     .then(result => {
         res.status(200).json({
@@ -113,11 +114,12 @@ router.delete('/:orderId' ,(req,res,next)=>{
             }
         })
     })
-    .catch()
-    // res.status(200).json({
-    //     message:'orders deleted',
-    //     orderId:req.params.orderId
-    // })
+    .catch(err => {
+        res.status(500).json({
+            message:'delete failed',
+            error:err
+        })
+    })
 })
 
 
